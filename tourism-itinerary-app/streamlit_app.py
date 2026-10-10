@@ -150,7 +150,7 @@ with tab_plan:
 
     if st.button("Plan my adventure!", type="primary"):
         prompt = build_prompt(city_label, days, hours_per_day, start_time, interests, pace, notes, cands)
-        with st.spinner("Kin is scribbling on a map..."):
+        with st.spinner("Kin is sniffing around..."):
             try:
                 st.session_state["itinerary"] = generate_itinerary(model, prompt)
                 st.session_state["itinerary_ctx"] = (city_label, days, hours_per_day, start_time, tuple(interests), pace, notes)

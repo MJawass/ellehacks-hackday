@@ -17,6 +17,8 @@ _WOOD_B64 = _b64("woodpanel.png")
 _FOREST_B64 = _b64("forest.png")
 _VINE_B64 = _b64("vine.png")
 _TEXTBOX_B64 = _b64("textbox.png")
+_LEAF_TL_B64 = _b64("leaves_tl.png")
+_LEAF_BR_B64 = _b64("leaves_br.png")
 _FONT_B64 = base64.b64encode((Path(__file__).parent / "Minecraft.ttf").read_bytes()).decode()
 
 PAGE_ICON = str(_ASSETS / "kin_wave.png")
@@ -50,8 +52,8 @@ CSS = ("""
 @font-face { font-family: 'Minecraft'; src: url("data:font/ttf;base64,__FONT__") format('truetype'); }
 
 :root {
-  --bg: #1c3a22; --card: #fffaf0; --lilac: #e3f0dc; --line: #c6dcbc;
-  --purple: #4f8a4a; --purple-dark: #24502a; --ink: #1f2e1c; --muted: #4d6b4a;
+  --bg: #2e1a12; --card: #3b2414; --lilac: #4a2e1a; --line: #7a4a24;
+  --purple: #6fae5a; --purple-dark: #fff1d6; --ink: #fff1d6; --muted: #fff1d6;
   --orange: #2f6b34; --orange-dark: #1f4a24; --orange-soft: #dcefd5;
   --wood-dark: #3b1d0e; --parchment: #fff4e0; --cream: #fff1d6;
   --shadow: 0 6px 24px rgba(20, 50, 24, .25);
@@ -61,7 +63,9 @@ CSS = ("""
 html, body, .stApp, .stApp *:not([data-testid="stIconMaterial"]):not(.material-symbols-rounded) {
   font-family: 'Minecraft', monospace !important;
 }
-html, body, .stMarkdown, p, label, input, textarea, li { color: var(--ink); }
+html, body, .stMarkdown, p, label, input, textarea, li, span, small, td, th,
+[data-testid="stMetricValue"], [data-testid="stMetricLabel"], [data-testid="stCaptionContainer"],
+[data-testid="stSliderThumbValue"], [data-testid="stSliderTickBarMin"], [data-testid="stSliderTickBarMax"] { color: var(--ink) !important; }
 h1, h2, h3 { letter-spacing: 1.5px; font-weight: 400 !important; color: var(--purple-dark); }
 h2, h3 { font-size: 28px !important; }
 
@@ -71,7 +75,7 @@ h2, h3 { font-size: 28px !important; }
 }
 /* Main content sits on a parchment panel so text stays readable over the forest */
 .block-container {
-  background: rgba(255, 250, 240, .94); border: 4px solid var(--orange-dark); border-radius: 10px;
+  background: rgba(40, 22, 12, .9); border: 4px solid var(--wood-dark); border-radius: 10px;
   margin-top: 2rem; padding-bottom: 2rem !important; box-shadow: 0 10px 0 rgba(10, 30, 14, .5);
 }
 /* Hide the "Running ..." status widget */
@@ -89,13 +93,14 @@ h2, h3 { font-size: 28px !important; }
   border-right: 6px solid var(--wood-dark);
   position: relative; overflow: visible;
 }
+[data-testid="stSidebarUserContent"] { padding-left: 2.6rem !important; padding-right: 2.6rem !important; }
 /* Pixel vines creeping down both edges of the wood panel */
 [data-testid="stSidebar"]::before, [data-testid="stSidebar"]::after {
   content: ""; position: absolute; top: 0; bottom: 0; width: 32px; z-index: 5; pointer-events: none;
-  background: url("data:image/png;base64,__VINE__") repeat-y; background-size: 32px 96px; image-rendering: pixelated;
+  background: url("data:image/png;base64,__VINE__") repeat-y; background-size: 32px 128px; image-rendering: pixelated;
 }
-[data-testid="stSidebar"]::before { left: 0; }
-[data-testid="stSidebar"]::after { right: -4px; transform: scaleX(-1); background-position: 0 40px; }
+[data-testid="stSidebar"]::before { left: -4px; }
+[data-testid="stSidebar"]::after { right: -2px; transform: scaleX(-1); background-position: 0 40px; }
 [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 {
   color: var(--cream) !important; text-align: center; background: var(--wood-dark);
   border: 3px solid #6b3a1c; border-radius: 6px; padding: 6px 0 !important;
@@ -119,7 +124,8 @@ h2, h3 { font-size: 28px !important; }
   background: var(--parchment) !important; color: var(--wood-dark) !important;
   border: 2px solid var(--wood-dark) !important; border-radius: 6px !important;
 }
-[data-testid="stSidebar"] [data-baseweb="select"] span, [data-testid="stSidebar"] [data-baseweb="select"] div { color: var(--wood-dark); }
+[data-testid="stSidebar"] [data-baseweb="select"] span, [data-testid="stSidebar"] [data-baseweb="select"] div,
+[data-testid="stSidebar"] [data-baseweb="input"] *, [data-testid="stSidebar"] .stButton button * { color: var(--wood-dark) !important; text-shadow: none !important; }
 [data-testid="stSidebar"] [data-baseweb="tag"] { background: var(--orange) !important; }
 [data-testid="stSidebar"] [data-baseweb="tag"] span { color: #fff !important; }
 [data-testid="stSidebar"] [data-testid="stButtonGroup"] button {
@@ -127,6 +133,25 @@ h2, h3 { font-size: 28px !important; }
 }
 [data-testid="stSidebar"] [data-testid="stButtonGroup"] button[kind*="Active"] {
   background: var(--orange) !important; color: #fff !important;
+}
+[data-testid="stSidebar"] [data-testid="stButtonGroup"] button * {
+  color: var(--wood-dark) !important; text-shadow: none !important; font-size: 15px !important;
+}
+[data-testid="stSidebar"] [data-testid="stButtonGroup"] button {
+  transition: transform .12s ease, background .12s ease, box-shadow .12s ease;
+}
+[data-testid="stSidebar"] [data-testid="stButtonGroup"] button:hover {
+  background: #e8a24a !important; transform: translateY(-3px); box-shadow: 0 4px 0 var(--wood-dark);
+}
+[data-testid="stSidebar"] [data-testid="stButtonGroup"] button[kind*="Active"],
+[data-testid="stSidebar"] [data-testid="stButtonGroup"] button[aria-checked="true"],
+[data-testid="stSidebar"] [data-testid="stButtonGroup"] button[aria-pressed="true"] {
+  background: var(--orange) !important; box-shadow: inset 0 3px 0 rgba(0,0,0,.35); transform: none;
+}
+[data-testid="stSidebar"] [data-testid="stButtonGroup"] button[kind*="Active"] *,
+[data-testid="stSidebar"] [data-testid="stButtonGroup"] button[aria-checked="true"] *,
+[data-testid="stSidebar"] [data-testid="stButtonGroup"] button[aria-pressed="true"] * {
+  color: var(--cream) !important; text-shadow: 2px 2px 0 var(--wood-dark) !important;
 }
 [data-testid="stSidebar"] .stButton button {
   background: var(--parchment) !important; color: var(--wood-dark) !important; border: 2px solid var(--wood-dark) !important;
@@ -140,7 +165,7 @@ input, textarea, [data-baseweb="select"] > div {
 /* Buttons */
 .stButton button {
   border-radius: 999px !important; border: 1.5px solid var(--purple) !important;
-  color: var(--purple-dark) !important; background: var(--card) !important;
+  color: var(--ink) !important; background: var(--card) !important;
   padding: 8px 20px !important; transition: transform .15s ease, box-shadow .15s ease;
 }
 .stButton button:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
@@ -156,7 +181,7 @@ input, textarea, [data-baseweb="select"] > div {
   box-shadow: var(--shadow);
 }
 [data-testid="stMetric"] { padding: 14px 18px; }
-[data-testid="stMetricValue"] { color: var(--orange) !important; }
+[data-testid="stMetricValue"] { color: var(--ink) !important; }
 [data-testid="stMetricLabel"] { color: var(--muted) !important; }
 
 /* Tabs = pills */
@@ -165,7 +190,7 @@ input, textarea, [data-baseweb="select"] > div {
   border-radius: 999px !important; padding: 6px 18px !important; background: var(--lilac) !important;
   color: var(--muted) !important;
 }
-[data-baseweb="tab"][aria-selected="true"] { background: var(--orange-soft) !important; color: var(--orange-dark) !important; }
+[data-baseweb="tab"][aria-selected="true"] { background: var(--orange) !important; color: var(--ink) !important; }
 [data-baseweb="tab-highlight"], [data-baseweb="tab-border"] { display: none; }
 
 [data-testid="stDataFrame"], [data-testid="stDeckGlJsonChart"] { border-radius: 14px; overflow: hidden; border: 1px solid var(--line); }
@@ -183,9 +208,19 @@ __MOODS__
 .kin-bubble {
   position: relative; max-width: 640px; line-height: 1.45; color: #3b1d0e;
   border: 20px solid transparent; border-image: url("data:image/png;base64,__TEXTBOX__") 20 fill stretch;
-  image-rendering: pixelated; padding: 2px 6px; filter: drop-shadow(0 4px 0 rgba(10, 30, 14, .35));
+  image-rendering: pixelated; padding: 22px 30px 28px; filter: drop-shadow(0 4px 0 rgba(10, 30, 14, .35));
 }
-.kin-bubble * { color: #3b1d0e; }
+.kin-bubble, .kin-bubble * { color: #3b1d0e !important; }
+/* Autumn leaves spilling off the bubble corners */
+.kin-bubble::before, .kin-bubble::after, .block-container::before, .block-container::after {
+  content: ""; position: absolute; width: 80px; height: 72px; pointer-events: none; image-rendering: pixelated;
+  background-size: contain; background-repeat: no-repeat;
+}
+.kin-bubble::before { top: -44px; left: -46px; background-image: url("data:image/png;base64,__LEAFTL__"); }
+.kin-bubble::after { bottom: -46px; right: -48px; background-image: url("data:image/png;base64,__LEAFBR__"); }
+.block-container { position: relative; }
+.block-container::before { top: -34px; left: -34px; width: 120px; height: 108px; background-image: url("data:image/png;base64,__LEAFTL__"); }
+.block-container::after { bottom: -34px; right: -34px; width: 120px; height: 108px; background-image: url("data:image/png;base64,__LEAFBR__"); }
 .kin-name { display: block; font-size: 11px; letter-spacing: 2px; color: #8a4a12 !important; margin-bottom: 2px; }
 
 .hero { display: flex; align-items: center; gap: 24px; }
@@ -196,7 +231,7 @@ __MOODS__
 .hero .sub { color: var(--muted); font-size: 18px; margin-top: 4px; }
 .quest-time { color: var(--purple-dark); font-size: 18px; }
 .trend-badge {
-  display: inline-block; background: var(--orange-soft); color: var(--orange-dark) !important; font-size: 12px;
+  display: inline-block; background: var(--orange); color: var(--ink) !important; font-size: 12px;
   padding: 2px 10px; border-radius: 999px; margin-left: 8px;
 }
 .day-banner {
@@ -206,4 +241,5 @@ __MOODS__
 }
 </style>
 """.replace("__MOODS__", _MOOD_CSS).replace("__LOGO__", _LOGO_B64).replace("__WOOD__", _WOOD_B64).replace("__FONT__", _FONT_B64)
-       .replace("__FOREST__", _FOREST_B64).replace("__VINE__", _VINE_B64).replace("__TEXTBOX__", _TEXTBOX_B64))
+       .replace("__FOREST__", _FOREST_B64).replace("__VINE__", _VINE_B64).replace("__TEXTBOX__", _TEXTBOX_B64)
+       .replace("__LEAFTL__", _LEAF_TL_B64).replace("__LEAFBR__", _LEAF_BR_B64))

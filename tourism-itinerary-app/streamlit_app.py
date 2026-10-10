@@ -145,8 +145,8 @@ with tab_plan:
     if not itin:
         greeting = f"Howdy, traveler! Welcome to <b>{esc(city_label)}</b>. I found <b>{len(cands)}</b> spots"
         greeting += f", and <b>{len(trending)}</b> of them have folks buzzing online!" if len(trending) else "."
-        greeting += " Press the big orange button and I'll plan your adventure."
-        st.markdown(kin_says(greeting, "wave"), unsafe_allow_html=True)
+        greeting += " Press the big green button and I'll plan your adventure."
+        st.markdown(kin_says(greeting, "point"), unsafe_allow_html=True)
 
     if st.button("Plan my adventure!", type="primary"):
         prompt = build_prompt(city_label, days, hours_per_day, start_time, interests, pace, notes, cands)

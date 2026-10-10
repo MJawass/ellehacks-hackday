@@ -21,5 +21,7 @@ entities:
       - assets/forest.png
       - assets/vine.png
       - assets/textbox.png
+      - assets/leaves_tl.png
+      - assets/leaves_br.png
       - Minecraft.ttf
       - .streamlit/config.toml

@@ -11,6 +11,15 @@ entities:
       - streamlit_app.py
       - queries.py
       - kin.py
-      - mrkin2.svg
+      - assets/kin_wave.png
+      - assets/kin_cheer.png
+      - assets/kin_point.png
+      - assets/kin_walk.png
+      - assets/kin_shy.png
+      - assets/bumpkin_logo.png
+      - assets/woodpanel.png
+      - assets/forest.png
+      - assets/vine.png
+      - assets/textbox.png
       - Minecraft.ttf
       - .streamlit/config.toml

@@ -3,8 +3,8 @@
 # information.
 
 [theme]
-primaryColor = "#ff8c42"
-backgroundColor = "#faf7ff"
-secondaryBackgroundColor = "#f1eafc"
-textColor = "#2e2340"
+primaryColor = "#2f6b34"
+backgroundColor = "#fffaf0"
+secondaryBackgroundColor = "#e3f0dc"
+textColor = "#1f2e1c"
 base = "light"

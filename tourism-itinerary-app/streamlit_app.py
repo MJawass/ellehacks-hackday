@@ -5,7 +5,7 @@ import os
 import pandas as pd
 import streamlit as st
 
-from kin import CSS, kin_img, kin_says
+from kin import CSS, PAGE_ICON, kin_img, kin_says, logo_img
 from queries import (
     CANDIDATES_SQL,
     INTERESTS,
@@ -14,13 +14,13 @@ from queries import (
     SOCIAL_CITIES_SQL,
 )
 
-st.set_page_config(page_title="Bumpkin", page_icon=":raccoon:", layout="wide")
+st.set_page_config(page_title="Bumpkin", page_icon=PAGE_ICON, layout="wide")
 st.markdown(CSS, unsafe_allow_html=True)
 
 st.markdown(
-    f"""<div class="hero">{kin_img(9)}
-    <div><h1>Bumpkin</h1>
-    <div class="sub">Little adventures for short stays, scouted by Kin from Instagram &amp; TikTok chatter.</div></div>
+    f"""<div class="hero">{kin_img(9, "wave")}
+    <div>{logo_img()}
+    <div class="sub">Little adventures for short stays, scouted by Kin from Instagram &amp; TikTok feeds.</div></div>
     </div>""",
     unsafe_allow_html=True,
 )
@@ -37,12 +37,12 @@ def esc(v) -> str:
 
 @st.cache_data(ttl=3600, show_spinner=False)
 def load_social_cities() -> pd.DataFrame:
-    return conn.query(SOCIAL_CITIES_SQL)
+    return conn.query(SOCIAL_CITIES_SQL, show_spinner=False)
 
 
 @st.cache_data(ttl=1800, show_spinner=False)
 def load_candidates(lon: float, lat: float, radius_m: float, cats_json: str) -> pd.DataFrame:
-    df = conn.query(CANDIDATES_SQL, params=[lon, lat, radius_m, cats_json])
+    df = conn.query(CANDIDATES_SQL, params=[lon, lat, radius_m, cats_json], show_spinner=False)
     df.columns = [c.lower() for c in df.columns]
     return df
 
@@ -85,19 +85,19 @@ Candidates (name | category | distance | social signal):
 
 
 def generate_itinerary(model, prompt):
-    df = conn.query(ITINERARY_SQL, params=[model, prompt], ttl=0)
+    df = conn.query(ITINERARY_SQL, params=[model, prompt], ttl=0, show_spinner=False)
     raw = df.iloc[0, 0]
     return json.loads(raw) if isinstance(raw, str) else raw
 
 
 # ---------------- Sidebar: the tool shed ----------------
 with st.sidebar:
-    st.markdown(f'<div style="text-align:center">{kin_img(6)}</div>', unsafe_allow_html=True)
+    st.markdown(f'<div style="text-align:center">{kin_img(7, "walk")}</div>', unsafe_allow_html=True)
     st.header("Trip Shed")
     social_cities = load_social_cities()
     social_names = [c for c in social_cities["CITY"].tolist() if c and c not in PRESET_CITIES]
     city_options = list(PRESET_CITIES.keys()) + social_names + ["Custom location"]
-    city = st.selectbox(":world_map: Where are you?", city_options, index=0)
+    city = st.selectbox("Where are you?", city_options, index=0)
 
     if city == "Custom location":
         city_label = st.text_input("Place name", "My location")
@@ -111,13 +111,13 @@ with st.sidebar:
         row = social_cities[social_cities["CITY"] == city].iloc[0]
         lat, lon = float(row["LAT"]), float(row["LON"])
 
-    days = st.slider(":sunrise: Days in town", 1, 3, 1)
-    hours_per_day = st.slider(":hourglass_flowing_sand: Hours free per day", 2, 12, 6)
-    start_time = st.time_input(":alarm_clock: Start time", value=pd.Timestamp("10:00").time()).strftime("%H:%M")
-    interests = st.multiselect(":seedling: Interests", list(INTERESTS.keys()), default=["Food", "Coffee & cafes", "Culture & history"])
+    days = st.slider("Days in town", 1, 3, 1)
+    hours_per_day = st.slider("Hours free per day", 2, 12, 6)
+    start_time = st.time_input("Start time", value=pd.Timestamp("10:00").time()).strftime("%H:%M")
+    interests = st.multiselect("Interests", list(INTERESTS.keys()), default=["Food", "Coffee & cafes", "Culture & history"])
     pace = st.segmented_control("Pace", ["Relaxed", "Balanced", "Packed"], default="Balanced") or "Balanced"
-    radius_km = st.slider(":athletic_shoe: How far will you wander? (km)", 1, 10, 3)
-    notes = st.text_area(":scroll: Notes for Kin", placeholder="e.g. vegetarian, travelling with kids, love views")
+    radius_km = st.slider("How far will you wander? (km)", 1, 10, 3)
+    notes = st.text_area("Notes for Kin", placeholder="e.g. vegetarian, travelling with kids, love views")
     model = st.selectbox("AI model", MODELS)
     st.button("Restock data", on_click=clear_caches, help="Clear cached place data")
 
@@ -130,12 +130,12 @@ with st.spinner("Kin is sniffing around for good spots..."):
 trending = cands[cands["num_posts"].fillna(0) > 0]
 
 m1, m2, m3 = st.columns(3)
-m1.metric(":house_with_garden: Spots nearby", len(cands))
-m2.metric(":fire: Trending", len(trending))
-m3.metric(":basket: Kinds of fun", cands["category"].nunique() if len(cands) else 0)
+m1.metric("Spots nearby", len(cands))
+m2.metric("Trending", len(trending))
+m3.metric("Kinds of fun", cands["category"].nunique() if len(cands) else 0)
 
 if cands.empty:
-    st.markdown(kin_says("Hmm... my basket's empty here! Try wandering farther or picking other interests."), unsafe_allow_html=True)
+    st.markdown(kin_says("Hmm... my basket's empty here! Try wandering farther or picking other interests.", "shy"), unsafe_allow_html=True)
     st.stop()
 
 tab_plan, tab_places, tab_social = st.tabs(["Quest Log", "Town Map", "Gossip Board"])
@@ -146,7 +146,7 @@ with tab_plan:
         greeting = f"Howdy, traveler! Welcome to <b>{esc(city_label)}</b>. I found <b>{len(cands)}</b> spots"
         greeting += f", and <b>{len(trending)}</b> of them have folks buzzing online!" if len(trending) else "."
         greeting += " Press the big orange button and I'll plan your adventure."
-        st.markdown(kin_says(greeting), unsafe_allow_html=True)
+        st.markdown(kin_says(greeting, "wave"), unsafe_allow_html=True)
 
     if st.button("Plan my adventure!", type="primary"):
         prompt = build_prompt(city_label, days, hours_per_day, start_time, interests, pace, notes, cands)
@@ -160,7 +160,7 @@ with tab_plan:
 
     if itin:
         st.markdown(
-            kin_says(f"<b>{esc(itin.get('title', 'Your adventure'))}</b><br>{esc(itin.get('summary', ''))}"),
+            kin_says(f"<b>{esc(itin.get('title', 'Your adventure'))}</b><br>{esc(itin.get('summary', ''))}", "cheer"),
             unsafe_allow_html=True,
         )
         stops = itin.get("stops", [])
@@ -177,11 +177,11 @@ with tab_plan:
                     )
                     badge = ""
                     if info is not None and pd.notna(info["num_posts"]):
-                        badge = f'<span class="trend-badge">&#9733; hot on {esc(info["platforms"])}</span>'
+                        badge = f'<span class="trend-badge">hot on {esc(info["platforms"])}</span>'
                     h2.markdown(f"<b>{esc(s['name'])}</b>{badge}", unsafe_allow_html=True)
                     h2.write(s.get("why", ""))
                     if s.get("tip"):
-                        h2.caption(f":bulb: Kin's tip: {s['tip']}")
+                        h2.caption(f"Kin's tip: {s['tip']}")
                     if info is not None:
                         links = []
                         if pd.notna(info["address"]):
@@ -195,7 +195,7 @@ with tab_plan:
 
         stop_pts = cands[cands["name"].isin([s["name"] for s in stops])][["lat", "lon"]]
         if not stop_pts.empty:
-            st.map(stop_pts, latitude="lat", longitude="lon", size=40, color="#ff8c42")
+            st.map(stop_pts, latitude="lat", longitude="lon", size=40, color="#2f6b34")
 
         feedback = st.chat_input("Tell Kin what to change, e.g. 'swap dinner for something cheaper'")
         if feedback:
@@ -206,8 +206,8 @@ with tab_plan:
             st.rerun()
 
 with tab_places:
-    st.markdown(kin_says("Here's every spot I sniffed out. Higher score = Kin-approved!"), unsafe_allow_html=True)
-    st.map(cands, latitude="lat", longitude="lon", size=25, color="#9b7fd4")
+    st.markdown(kin_says("Here's every spot I sniffed out. Higher score = Kin-approved!", "point"), unsafe_allow_html=True)
+    st.map(cands, latitude="lat", longitude="lon", size=25, color="#7fbf5f")
     st.dataframe(
         cands[["name", "category", "km", "score", "num_posts", "total_likes", "address", "website"]],
         hide_index=True,
@@ -223,12 +223,13 @@ with tab_social:
         st.markdown(
             kin_says(
                 "Quiet around here... nobody's gossiping online about these spots yet, so I picked by local reputation. "
-                "Try Sydney, London, Sheffield or Varanasi to hear the town gossip!"
+                "Try Sydney, London, Sheffield or Varanasi to hear the town gossip!",
+                "shy",
             ),
             unsafe_allow_html=True,
         )
     else:
-        st.markdown(kin_says("Psst! Here's what folks are posting about on Instagram &amp; TikTok."), unsafe_allow_html=True)
+        st.markdown(kin_says("Psst! Here's what folks are posting about on Instagram &amp; TikTok.", "point"), unsafe_allow_html=True)
         st.dataframe(
             trending[["name", "category", "platforms", "num_posts", "total_likes", "total_comments", "sentiment_score", "vibe", "sample_post_url"]],
             hide_index=True,

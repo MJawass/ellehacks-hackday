@@ -57,18 +57,6 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Add your Snowflake connection to `.streamlit/secrets.toml` (do not commit this file):
-
-```toml
-[connections.snowflake]
-account = "YOUR_ACCOUNT"
-user = "YOUR_USER"
-password = "YOUR_PASSWORD_OR_PROGRAMMATIC_ACCESS_TOKEN"
-role = "YOUR_ROLE"
-warehouse = "YOUR_WAREHOUSE"
-database = "TOURISM_APP"
-schema = "CORE"
-```
 
 Then start the app:
 
@@ -76,17 +64,6 @@ Then start the app:
 streamlit run streamlit_app.py
 ```
 
-### Deploy to Streamlit in Snowflake
-
-From `tourism-itinerary-app`, with the Snowflake CLI installed and configured:
-
-```bash
-snow streamlit deploy --replace
-```
-
-### Deploy to Streamlit Community Cloud
-
-Point the app at `tourism-itinerary-app/streamlit_app.py`, choose Python 3.12 in the advanced settings and paste the `[connections.snowflake]` block above into the app's Secrets.
 
 ## How to use it
 

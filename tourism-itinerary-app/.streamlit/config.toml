@@ -1,0 +1,10 @@
+# This file can be used to set a custom theme for your Streamlit. See
+# https://docs.streamlit.io/develop/concepts/configuration/theming for more
+# information.
+
+[theme]
+primaryColor = "#ff8c42"
+backgroundColor = "#faf7ff"
+secondaryBackgroundColor = "#f1eafc"
+textColor = "#2e2340"
+base = "light"

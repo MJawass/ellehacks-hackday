@@ -27,7 +27,7 @@ st.markdown(
 
 conn = st.connection("snowflake", ttl=os.getenv("SNOWFLAKE_CONNECTION_TTL"))
 
-MODELS = ["claude-sonnet-4-5", "llama3.3-70b", "mistral-large2"]
+MODELS = ["llama3.3-70b", "mistral-large2"]
 SEASONS = ["Spring", "Summer", "Fall"]
 
 
@@ -181,7 +181,7 @@ with tab_plan:
                     h2.markdown(f"<b>{esc(s['name'])}</b>{badge}", unsafe_allow_html=True)
                     h2.write(s.get("why", ""))
                     if s.get("tip"):
-                        h2.caption(f"Kin's tip: {s['tip']}")
+                        h2.markdown(f'<div class="kin-tip"><span><b>Kin\'s tip:</b> {esc(s["tip"])}</span></div>', unsafe_allow_html=True)
                     if info is not None:
                         links = []
                         if pd.notna(info["address"]):

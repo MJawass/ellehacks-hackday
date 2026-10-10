@@ -23,5 +23,6 @@ entities:
       - assets/textbox.png
       - assets/leaves_tl.png
       - assets/leaves_br.png
+      - assets/bulb.png
       - Minecraft.ttf
       - .streamlit/config.toml

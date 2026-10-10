@@ -19,6 +19,7 @@ _VINE_B64 = _b64("vine.png")
 _TEXTBOX_B64 = _b64("textbox.png")
 _LEAF_TL_B64 = _b64("leaves_tl.png")
 _LEAF_BR_B64 = _b64("leaves_br.png")
+_BULB_B64 = _b64("bulb.png")
 _FONT_B64 = base64.b64encode((Path(__file__).parent / "Minecraft.ttf").read_bytes()).decode()
 
 PAGE_ICON = str(_ASSETS / "kin_wave.png")
@@ -234,6 +235,16 @@ __MOODS__
   display: inline-block; background: var(--orange); color: var(--ink) !important; font-size: 12px;
   padding: 2px 10px; border-radius: 999px; margin-left: 8px;
 }
+.kin-tip {
+  display: flex; align-items: center; gap: 10px; margin: 8px 0 4px; padding: 8px 12px;
+  background: rgba(255, 190, 70, .16); border: 2px solid #e8a33c; border-left: 6px solid #e8a33c;
+  border-radius: 4px; color: #ffe2a3 !important; font-size: 14px;
+}
+.kin-tip b { color: #ffc846 !important; }
+.kin-tip::before {
+  content: ""; flex: none; width: 18px; height: 24px; image-rendering: pixelated;
+  background: url("data:image/png;base64,__BULB__") center / contain no-repeat;
+}
 .day-banner {
   display: inline-block; background: var(--orange); color: #fff !important; border-radius: 999px;
   font-size: 13px; letter-spacing: 2px; padding: 6px 16px; margin: 18px 0 8px;
@@ -242,4 +253,4 @@ __MOODS__
 </style>
 """.replace("__MOODS__", _MOOD_CSS).replace("__LOGO__", _LOGO_B64).replace("__WOOD__", _WOOD_B64).replace("__FONT__", _FONT_B64)
        .replace("__FOREST__", _FOREST_B64).replace("__VINE__", _VINE_B64).replace("__TEXTBOX__", _TEXTBOX_B64)
-       .replace("__LEAFTL__", _LEAF_TL_B64).replace("__LEAFBR__", _LEAF_BR_B64))
+       .replace("__LEAFTL__", _LEAF_TL_B64).replace("__LEAFBR__", _LEAF_BR_B64).replace("__BULB__", _BULB_B64))

@@ -1,10 +1,11 @@
-"""Bumpkin theme: Kin the raccoon mascot (mrkin.svg) + clean purple/orange spooky CSS."""
+"""Bumpkin theme: Kin the raccoon mascot (mrkin2.svg) + clean purple/orange spooky CSS."""
 import base64
 from pathlib import Path
 
-_MASCOT = Path(__file__).parent / "mrkin.svg"
+_MASCOT = Path(__file__).parent / "mrkin2.svg"
 # Encode once at import; the image is injected a single time via CSS so each bubble doesn't repeat ~1 MB.
 _MASCOT_B64 = base64.b64encode(_MASCOT.read_bytes()).decode()
+_FONT_B64 = base64.b64encode((Path(__file__).parent / "Minecraft.ttf").read_bytes()).decode()
 
 
 def kin_img(scale: int = 6) -> str:
@@ -21,7 +22,7 @@ def kin_says(text: str, scale: int = 5) -> str:
 
 CSS = """
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Creepster&display=swap');
+@font-face { font-family: 'Minecraft'; src: url("data:font/ttf;base64,__FONT__") format('truetype'); }
 
 :root {
   --bg: #faf7ff; --card: #ffffff; --lilac: #f1eafc; --line: #e6dcf7;
@@ -31,9 +32,9 @@ CSS = """
 }
 
 html, body, .stMarkdown, p, label, input, textarea, li {
-  font-family: 'Nunito', system-ui, sans-serif !important; color: var(--ink);
+  font-family: 'Minecraft', monospace !important; color: var(--ink);
 }
-h1, h2, h3 { font-family: 'Creepster', 'Nunito', cursive !important; letter-spacing: 1.5px; font-weight: 400 !important; color: var(--purple-dark); }
+h1, h2, h3 { font-family: 'Minecraft', monospace !important; letter-spacing: 1.5px; font-weight: 400 !important; color: var(--purple-dark); }
 h1 { font-size: 52px !important; } h2, h3 { font-size: 28px !important; }
 
 .stApp {
@@ -113,4 +114,4 @@ input, textarea, [data-baseweb="select"] > div {
   box-shadow: 0 6px 18px rgba(255, 140, 66, .3);
 }
 </style>
-""".replace("__MASCOT__", _MASCOT_B64)
+""".replace("__MASCOT__", _MASCOT_B64).replace("__FONT__", _FONT_B64)

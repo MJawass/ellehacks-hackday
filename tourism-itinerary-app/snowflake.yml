@@ -11,5 +11,6 @@ entities:
       - streamlit_app.py
       - queries.py
       - kin.py
-      - mrkin.svg
+      - mrkin2.svg
+      - Minecraft.ttf
       - .streamlit/config.toml
